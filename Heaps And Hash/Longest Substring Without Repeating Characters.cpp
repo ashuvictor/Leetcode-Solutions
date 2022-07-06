@@ -1,7 +1,6 @@
 
 
 
-
 Given a string s, find the length of the longest substring without repeating characters.
 
  
@@ -16,6 +15,51 @@ Example 2:
 Input: s = "bbbbb"
 Output: 1
 Explanation: The answer is "b", with the length of 1.
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+     int i=0,j=0;
+        int n=s.size();
+        map<char,int>mp;int ans=0;
+        while(j<n){
+            mp[s[j]]++;
+            if(mp.size()>j-i+1)
+            {
+                j++;
+            }
+            else if(mp.size()==j-i+1)
+            {
+                ans=max(ans,j-i+1);
+                j++;
+            }
+            else
+            {
+                while(mp.size()<j-i+1)
+                {
+                    mp[s[i]]--;
+                    if(mp[s[i]]==0)
+                        mp.erase(s[i]);
+                    i++;
+                }j++;
+            }
+        }
+        return ans;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
