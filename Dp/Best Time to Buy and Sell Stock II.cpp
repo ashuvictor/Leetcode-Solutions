@@ -15,28 +15,22 @@ Input: prices = [7,1,5,3,6,4]
 Output: 7
 Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
 Then buy on day 4 (price = 3) and
-
-class Solution 
-{
+//buy on lowest and sell on max day
+class Solution {
 public:
-    int maxProfit(vector<int>& prices) 
-    {
-        int res = 0;
-        int cur_min = prices.back(), cur_max = prices.back();
-        for (int i = prices.size() - 2; i >= 0; i--)
+    int maxProfit(vector<int>& prices) {
+        
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
+        
+        int n = prices.size();
+        int diff = 0;
+        for(int i=1;i<n;++i)
         {
-            if (prices[i] > prices[i + 1])
-            {
-                res += (cur_max - cur_min);
-                cur_min = cur_max = prices[i];
-            }
-            else if (prices[i] > cur_max)
-                cur_max = prices[i];
-            else
-                cur_min = prices[i];
+            if(prices[i] > prices[i-1])
+                diff += prices[i]-prices[i-1];
         }
-        res += (cur_max - cur_min);
-        return res;
+        return diff;
     }
 };
 
