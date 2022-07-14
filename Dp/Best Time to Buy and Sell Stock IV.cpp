@@ -29,7 +29,28 @@ dp table of 3*Note
 -7+5
 in case we will get the profit also
 
-
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+         int n=prices.size();
+        if(n==0 or k==0)
+            return 0;
+        int minp[k];
+        int maxp[k];
+        for(int i=0;i<k;i++){
+            minp[i]=INT_MAX;
+            maxp[i]=0;
+        }
+        for(int i=0;i<prices.size();i++){
+            for(int j=0;j<k;j++){
+                minp[j]=min(minp[j],prices[i]-(j>0?maxp[j-1]:0));
+                maxp[j]=max(maxp[j],prices[i]-minp[j]);
+            }
+            
+        }
+        return maxp[k-1];
+    }
+};
 class Solution {
 public:
     int maxProfit(int k, vector<int>& prices) {

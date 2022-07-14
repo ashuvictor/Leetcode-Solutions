@@ -12,6 +12,75 @@ After you sell your stock, you cannot buy stock on the next day (i.e., cooldown 
 Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
 
  
+#include<bits/stdc++.h>
+int solve(int ind,int buy,vector<int>prices){
+    if(ind>=prices.size())
+        return 0;
+    int profit=0;
+    if(buy==1)
+    {
+        profit=max(-prices[ind]+solve(ind+1,0,prices),solve(ind+1,1,prices));
+    }
+    else
+    {
+        profit=max(prices[ind]+solve(ind+2,1,prices),solve(ind+1,0,prices));
+    }
+    return profit;
+}
+int stockProfit(vector<int> &prices){
+    // Write your code here.
+    return solve(0,1,prices);
+}
+
+
+
+#include<bits/stdc++.h>
+int solve(int ind,int buy,vector<int>prices,vector<vector<int>>&dp){
+    if(ind>=prices.size())
+        return 0;
+    if(dp[ind][buy]!=-1)
+        return dp[ind][buy];
+    int profit=0;
+    if(buy==1)
+    {
+        profit=max(-prices[ind]+solve(ind+1,0,prices,dp),solve(ind+1,1,prices,dp));
+    }
+    else
+    {
+        profit=max(prices[ind]+solve(ind+2,1,prices,dp),solve(ind+1,0,prices,dp));
+    }
+    return dp[ind][buy]=profit;
+}
+int stockProfit(vector<int> &prices){
+    // Write your code here.
+    int n=prices.size();
+    vector<vector<int>>dp(n,vector<int>(2,-1));
+    return solve(0,1,prices,dp);
+}
+
+
+
+int stockProfit(vector<int> &prices){
+    // Write your code here.
+    int n=prices.size();
+    vector<vector<int>>dp(n+2,vector<int>(2,0));
+    for(int ind=n-1;ind>=0;ind--){
+        for(int buy=0;buy<=1;buy++){
+            int profit=0;
+                if(buy==1)
+    {
+        profit=max(-prices[ind]+dp[ind+1][0],dp[ind+1][1]);
+    }
+    else
+    {
+        profit=max(prices[ind]+dp[ind+2][1],dp[ind+1][0]);
+    }
+            dp[ind][buy]=profit;
+        }
+    }
+    return dp[0][1];
+}
+
 
 Example 1:
 
@@ -19,30 +88,7 @@ Input: prices = [1,2,3,0,2]
 Output: 3
 Explanation: transactions = [buy, sell, cooldown, buy, sell]
 
-class Solution {
-public:
-    int maxProfit(vector<int>& prices) {
-        int n = prices.size(), val, prev;
-        if (n == 1) return 0;
 
-        vector<int> dp (n + 2, 0);
-        dp[3] = max(0, prices[1] - prices[0]);
-        
-		// `i - 2` stands for the day in `prices`
-        for (int i = 4; i < n + 2; i++) {
-            val = 0;
-			
-			// if we sell on `i - 2`, then the lockdown must be before or equal to `i - 3`, 
-			// so last sell on `j`, lockdown on `j + 1`, buy again on `j + 2`, which is also `i - 2`
-            for (int j = 0; j < i - 2; j++) {
-                val = max(val, prices[i - 2] - prices[j] + dp[j]);
-            }
-            dp[i] = max(dp[i - 1], val);
-        }
-        
-        return dp.back();
-    }
-};
 class Solution {
 public:
     int maxProfit(vector<int>& prices) {
