@@ -16,6 +16,67 @@ Both robots cannot move outside of the grid at any moment.
 Both robots should reach the bottom row in grid.
 
 
+T->O((3^m) * (3^m)) [Because both the robots will go through m cells and at each cell they will perform three stuffs either go left or down or right] && S->O(m/depth of the Recursion Tree) [Recursion Stack Space]
+
+class Solution {
+public:
+	int f(int i,int j1,int j2, vector<vector<int>>& grid,int m,int n){
+		if(j1<0 || j1>=n || j2<0 || j2>=n) return -1e9;
+		if(i==m-1){
+			if(j1==j2) return grid[i][j1];
+			else return grid[i][j1] + grid[i][j2];
+		}
+//      Explore all the movements of both robots
+		int maxi=INT_MIN;
+		for(int dj1=-1;dj1<=+1;dj1++){
+			for(int dj2=-1;dj2<=+1;dj2++){
+				if(j1==j2) maxi=max(maxi,grid[i][j1]+f(i+1,j1+dj1,j2+dj2,grid,m,n));
+				else maxi=max(maxi,grid[i][j1]+grid[i][j2]+f(i+1,j1+dj1,j2+dj2,grid,m,n));
+			}
+		}
+		return maxi;
+	}
+
+	int cherryPickup(vector<vector<int>>& grid) {
+		int m=grid.size();
+		int n=grid[0].size();
+		return f(0,0,n-1,grid,m,n);
+	}
+};
+
+T->O(m * m * n) && S->O(m) + O(m * m * n )
+
+class Solution {
+public:
+	int f(int i,int j1,int j2, vector<vector<int>>& grid,int m,int n,vector<vector<vector<int>>>& dp){
+		if(j1<0 || j1>=n || j2<0 || j2>=n) return -1e9;
+		if(i==m-1){
+			if(j1==j2) return grid[i][j1];
+			else return grid[i][j1] + grid[i][j2];
+		}
+		if(dp[i][j1][j2]!=-1) return dp[i][j1][j2];
+//      Explore all the movements of both robots
+		int maxi=INT_MIN;
+		for(int dj1=-1;dj1<=+1;dj1++){
+			for(int dj2=-1;dj2<=+1;dj2++){
+				if(j1==j2) dp[i][j1][j2]=maxi=max(maxi, grid[i][j1] + f(i+1,j1+dj1,j2+dj2,grid,m,n,dp));
+				else dp[i][j1][j2]=maxi=max(maxi, grid[i][j1] + grid[i][j2] + f(i+1,j1+dj1,j2+dj2,grid,m,n,dp));
+			}
+		}
+		return maxi;
+	}
+
+	int cherryPickup(vector<vector<int>>& grid) {
+		int m=grid.size();
+		int n=grid[0].size();
+		vector<vector<vector<int>>> dp(m,vector<vector<int>>(n,vector<int>(n,-1)));
+		return f(0,0,n-1,grid,m,n,dp);
+	}
+};
+
+
+
+
 
 class Solution {
 public:
