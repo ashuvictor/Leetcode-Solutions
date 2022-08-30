@@ -36,6 +36,7 @@ public:
         }
         if(edges<n-1) // if no of edges are less than that in mst
             return -1;
+            //in a graph of n nodes if we want to connect all then we need n-1 nodes .All extra nodes are redundant.
         int redundant=edges-((n-1)-(components-1));
         if(redundant>=(components-1))
             return components-1;

@@ -1,39 +1,49 @@
 
-You are given two integer arrays nums1 and nums2 sorted in ascending order and an integer k.
+_Potter_'s avatar
+_Potter_
 
-Define a pair (u, v) which consists of one element from the first array and one element from the second array.
+94
+June 24, 2022 8:56 PM
 
-Return the k pairs (u1, v1), (u2, v2), ..., (uk, vk) with the smallest sums.
-
- 
-
-Example 1:
-
-Input: nums1 = [1,7,11], nums2 = [2,4,6], k = 3
-Output: [[1,2],[1,4],[1,6]]
-Explanation: The first 3 pairs are returned from the sequence: [1,2],[1,4],[1,6],[7,2],[7,4],[11,2],[7,6],[11,4],[11,6]
-
+276 VIEWS
 
 class Solution {
-    struct comp{
-        bool operator()(pair<int,int> p1, pair<int,int> p2){
-            return p1.first+p1.second < p2.first+p2.second;
-        }
-      };
 public:
-   vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
-        vector<vector<int>> ans;
-        priority_queue<pair<int,int>, vector<pair<int,int>>, comp> pq;
-        for(int i=0;i<nums1.size();i++){
-            for(int j=0;j<nums2.size();j++){
-                pq.push({nums1[i], nums2[j]});
-                if(pq.size()>k)
-                    pq.pop();
+	
+	// custom comparator for heap
+    struct compare{
+        bool operator()(vector<int> &a, vector<int> &b){
+            return a[0]+a[1] < b[0]+b[1];
+        }
+    };
+    
+    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+		// Max heap
+        priority_queue<vector<int>, vector<vector<int>>, compare> heap;
+        
+        for(int i=0; i<nums1.size(); i++){
+            for(int j=0; j<nums2.size(); j++){
+				// Push if there aren't enough elements in heap
+                if(heap.size() < k){
+                    heap.push({nums1[i], nums2[j]});
+                }
+				// Update if there's new minimum
+                else if(heap.top()[0] + heap.top()[1] > nums1[i]+nums2[j]){
+                    heap.pop();
+                    heap.push({nums1[i], nums2[j]});
+                }
+                // Very very important because there's no need to check if sum > top of heap
+                // Because on traversing right the sum only increases
+                else{
+                    break;
+                }
             }
         }
-        while(!pq.empty()){
-            ans.push_back({pq.top().first, pq.top().second});
-            pq.pop();
+		
+        vector<vector<int>> ans;
+        while(!heap.empty()){
+            ans.push_back(heap.top());
+            heap.pop();
         }
         return ans;
     }
